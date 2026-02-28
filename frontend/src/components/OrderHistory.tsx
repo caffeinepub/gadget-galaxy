@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
 import { ArrowLeft, Package, ShoppingBag, Clock, AlertCircle } from 'lucide-react';
-import { useGetOrdersForCaller } from '../hooks/useQueries';
+import { useGetOrdersForCaller, useGetAllProducts } from '../hooks/useQueries';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { PRODUCTS } from './ProductCatalog';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { Product } from '../backend';
 
 interface OrderHistoryProps {
   onBack: () => void;
@@ -20,16 +21,21 @@ function formatDate(timestamp: bigint): string {
   });
 }
 
-function getProductDetails(productId: string) {
-  const id = parseInt(productId, 10);
-  return PRODUCTS.find((p) => p.id === id) || null;
-}
-
 export default function OrderHistory({ onBack }: OrderHistoryProps) {
   const { identity } = useInternetIdentity();
   const { data: orders, isLoading, error } = useGetOrdersForCaller();
+  const { data: allProducts = [] } = useGetAllProducts();
 
   const isAuthenticated = !!identity;
+
+  // Build a lookup map: productId -> Product
+  const productMap = useMemo(() => {
+    const map = new Map<string, Product>();
+    for (const p of allProducts) {
+      map.set(p.id, p);
+    }
+    return map;
+  }, [allProducts]);
 
   if (!isAuthenticated) {
     return (
@@ -128,8 +134,8 @@ export default function OrderHistory({ onBack }: OrderHistoryProps) {
           <div className="space-y-5">
             {[...orders].reverse().map((order) => {
               const orderTotal = order.products.reduce((sum, [productId, qty]) => {
-                const product = getProductDetails(productId);
-                return sum + (product ? product.price * Number(qty) : 0);
+                const product = productMap.get(productId);
+                return sum + (product ? (Number(product.price) / 100) * Number(qty) : 0);
               }, 0);
 
               return (
@@ -166,14 +172,20 @@ export default function OrderHistory({ onBack }: OrderHistoryProps) {
                   {/* Order items */}
                   <ul className="divide-y divide-gray-50">
                     {order.products.map(([productId, qty], idx) => {
-                      const product = getProductDetails(productId);
+                      const product = productMap.get(productId);
+                      const lineTotal = product
+                        ? (Number(product.price) / 100) * Number(qty)
+                        : null;
                       return (
                         <li key={idx} className="flex items-center gap-4 px-5 py-3">
                           {product ? (
                             <img
-                              src={product.image}
+                              src={product.imageUrl || '/assets/generated/speaker-product.dim_400x400.png'}
                               alt={product.name}
                               className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/assets/generated/speaker-product.dim_400x400.png';
+                              }}
                             />
                           ) : (
                             <div className="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center">
@@ -188,9 +200,9 @@ export default function OrderHistory({ onBack }: OrderHistoryProps) {
                               Qty: {qty.toString()}
                             </p>
                           </div>
-                          {product && (
+                          {lineTotal !== null && (
                             <p className="font-semibold text-gray-700 text-sm">
-                              ${(product.price * Number(qty)).toFixed(2)}
+                              ${lineTotal.toFixed(2)}
                             </p>
                           )}
                         </li>

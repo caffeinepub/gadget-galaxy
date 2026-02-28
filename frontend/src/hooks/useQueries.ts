@@ -1,9 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { UserProfile, Order, ShoppingItem, StripeConfiguration } from '../backend';
+import { Product, UserProfile, Order, ShoppingItem, StripeConfiguration } from '../backend';
 
-// ─── User Profile ────────────────────────────────────────────────────────────
-
+// User Profile Hooks
 export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -39,18 +38,99 @@ export function useSaveCallerUserProfile() {
   });
 }
 
-// ─── Orders ──────────────────────────────────────────────────────────────────
+// Admin Hooks
+export function useIsCallerAdmin() {
+  const { actor, isFetching } = useActor();
 
+  return useQuery<boolean>({
+    queryKey: ['isCallerAdmin'],
+    queryFn: async () => {
+      if (!actor) return false;
+      return actor.isCallerAdmin();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+// Product Hooks
+export function useGetAllProducts() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Product[]>({
+    queryKey: ['products'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllProducts();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useAddProduct() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (product: Product) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.addProduct(product);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+    onError: (error: Error) => {
+      console.error('Failed to add product:', error.message);
+    },
+  });
+}
+
+export function useUpdateProduct() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (product: Product) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.updateProduct(product);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+    onError: (error: Error) => {
+      console.error('Failed to update product:', error.message);
+    },
+  });
+}
+
+export function useDeleteProduct() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (productId: string) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.deleteProduct(productId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+    onError: (error: Error) => {
+      console.error('Failed to delete product:', error.message);
+    },
+  });
+}
+
+// Order Hooks
 export function useGetOrdersForCaller() {
-  const { actor, isFetching: actorFetching } = useActor();
+  const { actor, isFetching } = useActor();
 
   return useQuery<Order[]>({
-    queryKey: ['ordersForCaller'],
+    queryKey: ['orders'],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getOrdersForCaller();
     },
-    enabled: !!actor && !actorFetching,
+    enabled: !!actor && !isFetching,
   });
 }
 
@@ -59,20 +139,19 @@ export function useSubmitOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (products: Array<[string, bigint]>) => {
+    mutationFn: async (orderProducts: Array<[string, bigint]>) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.submitOrder(products);
+      return actor.submitOrder(orderProducts);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ordersForCaller'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
   });
 }
 
-// ─── Stripe ──────────────────────────────────────────────────────────────────
-
+// Stripe Hooks
 export function useIsStripeConfigured() {
-  const { actor, isFetching: actorFetching } = useActor();
+  const { actor, isFetching } = useActor();
 
   return useQuery<boolean>({
     queryKey: ['isStripeConfigured'],
@@ -80,7 +159,7 @@ export function useIsStripeConfigured() {
       if (!actor) return false;
       return actor.isStripeConfigured();
     },
-    enabled: !!actor && !actorFetching,
+    enabled: !!actor && !isFetching,
   });
 }
 
@@ -119,6 +198,17 @@ export function useCreateCheckoutSession() {
         throw new Error('Stripe session missing url');
       }
       return session;
+    },
+  });
+}
+
+export function useGetStripeSessionStatus() {
+  const { actor } = useActor();
+
+  return useMutation({
+    mutationFn: async (sessionId: string) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getStripeSessionStatus(sessionId);
     },
   });
 }

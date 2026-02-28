@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-populate-the-products-array-in-productcatalog-tsx-with-at-least-40-unique-tech-gadget-products-spanning-a-wide-variety-of-categories-e-g-smartphones-laptops-wearables-audio-smart-home-gaming-photography-networking-accessories-drones-vr-ar-health-tech-robotics-e-readers-each-product-must-have-a-unique-id-name-description-price-category-image-placeholder-or-emoji-and-a-rating",
-      "featureTitle": "Populate the PRODUCTS array in ProductCatalog.tsx with at least 40 unique tech/gadget products spanning a wide variety of categories (e.g., smartphones, laptops, wearables, audio, smart home, gaming, photography, networking, accessories, drones, VR/AR, health tech, robotics, e-readers). Each product must have a unique id, name, description, price, category, image placeholder or emoji, and a rating.",
+      "featureId": "feature-audit-the-productcatalog-component-and-ensure-all-products-load-correctly-from-the-backend-including-accurate-product-names-descriptions-prices-and-categories-fix-any-broken-data-fetching-or-rendering-issues-that-prevent-products-from-displaying",
+      "featureTitle": "Audit the ProductCatalog component and ensure all products load correctly from the backend, including accurate product names, descriptions, prices, and categories. Fix any broken data fetching or rendering issues that prevent products from displaying.",
       "files": [
         "frontend/src/components/ProductCatalog.tsx"
       ],
@@ -20,6 +20,52 @@
       ],
       "testIds": [
         "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-product-images-render-correctly-in-productcatalog-verify-that-the-name-based-and-category-based-image-resolution-logic-maps-each-product-to-a-valid-image-and-that-broken-missing-images-show-a-proper-fallback-placeholder",
+      "featureTitle": "Ensure product images render correctly in ProductCatalog. Verify that the name-based and category-based image resolution logic maps each product to a valid image, and that broken/missing images show a proper fallback placeholder.",
+      "files": [
+        "frontend/src/components/ProductCatalog.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0",
+        "authorization@4.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-add-to-cart-action-on-each-product-card-in-productcatalog-functions-correctly-clicking-it-adds-the-product-to-the-cart-state-updates-the-cart-badge-count-in-the-header-and-the-item-is-visible-in-cartpanel",
+      "featureTitle": "Ensure the 'Add to Cart' action on each product card in ProductCatalog functions correctly — clicking it adds the product to the cart state, updates the cart badge count in the Header, and the item is visible in CartPanel.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/CartPanel.tsx",
+        "frontend/src/components/ProductCatalog.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0",
+        "authorization@4.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

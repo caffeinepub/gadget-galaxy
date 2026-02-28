@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Expand the Gadget Galaxy product catalog with at least 40 unique tech/gadget products across a wide variety of categories.
+**Goal:** Fix the product page so that products load, display, and interact correctly end-to-end.
 
 **Planned changes:**
-- Populate the `PRODUCTS` array in `ProductCatalog.tsx` with at least 40 distinct products
-- Cover at least 8 categories such as smartphones, laptops, wearables, audio, smart home, gaming, photography, networking, accessories, drones, VR/AR, health tech, robotics, and e-readers
-- Each product includes a unique id, name, short description, numeric price, category string, emoji/placeholder image, and rating value
+- Audit and fix data fetching and rendering in the ProductCatalog component so all products display with correct names, descriptions, prices, and categories
+- Fix image resolution logic so every product card shows a matched or fallback image with no broken image icons
+- Fix the "Add to Cart" action so clicking it updates the cart badge in the Header and adds the item to the CartPanel (with quantity stacking for duplicates)
+- Fix backend product data to ensure all products have meaningful descriptions, valid prices greater than zero, and valid categories
 
-**User-visible outcome:** Users can browse and filter a rich catalog of 40+ unique tech and gadget products organized across many categories, with all existing filter chips working correctly on the expanded list.
+**User-visible outcome:** The product page fully loads all products with correct details and images, search/filter/sort controls work as expected, and adding items to the cart correctly updates the cart badge and cart panel.

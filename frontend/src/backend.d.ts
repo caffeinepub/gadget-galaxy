@@ -7,13 +7,7 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export interface TransformationOutput {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export type Time = bigint;
-export interface ProductV2 {
+export interface Product {
     id: string;
     name: string;
     description: string;
@@ -23,6 +17,12 @@ export interface ProductV2 {
     category: string;
     price: bigint;
 }
+export interface TransformationOutput {
+    status: bigint;
+    body: Uint8Array;
+    headers: Array<http_header>;
+}
+export type Time = bigint;
 export interface Order {
     id: bigint;
     principal: Principal;
@@ -76,20 +76,20 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
-    addProduct(product: ProductV2): Promise<void>;
+    addProduct(product: Product): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     decreaseStock(productId: string, quantity: bigint): Promise<void>;
     deleteProduct(productId: string): Promise<void>;
-    getAllProducts(): Promise<Array<ProductV2>>;
+    getAllProducts(): Promise<Array<Product>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getOrderForCaller(orderId: bigint): Promise<Order | null>;
     getOrdersForCaller(): Promise<Array<Order>>;
     getOrdersForUser(user: Principal): Promise<Array<Order>>;
-    getProductDetails(productId: ProductId): Promise<ProductV2 | null>;
-    getProducts(): Promise<Array<ProductV2>>;
-    getProductsByCategory(category: string): Promise<Array<ProductV2>>;
+    getProductDetails(productId: ProductId): Promise<Product | null>;
+    getProducts(): Promise<Array<Product>>;
+    getProductsByCategory(category: string): Promise<Array<Product>>;
     getStripeSessionStatus(sessionId: string): Promise<StripeSessionStatus>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
@@ -97,7 +97,7 @@ export interface backendInterface {
     restockProduct(productId: string, quantity: bigint): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
-    submitOrder(products: Array<[ProductId, Quantity]>): Promise<bigint>;
+    submitOrder(orderProducts: Array<[ProductId, Quantity]>): Promise<bigint>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
-    updateProduct(product: ProductV2): Promise<void>;
+    updateProduct(product: Product): Promise<void>;
 }

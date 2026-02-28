@@ -19,7 +19,7 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'success' : IDL.Opt(IDL.Bool),
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
-export const ProductV2 = IDL.Record({
+export const Product = IDL.Record({
   'id' : IDL.Text,
   'name' : IDL.Text,
   'description' : IDL.Text,
@@ -109,7 +109,7 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-  'addProduct' : IDL.Func([ProductV2], [], []),
+  'addProduct' : IDL.Func([Product], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createCheckoutSession' : IDL.Func(
       [IDL.Vec(ShoppingItem), IDL.Text, IDL.Text],
@@ -118,19 +118,15 @@ export const idlService = IDL.Service({
     ),
   'decreaseStock' : IDL.Func([IDL.Text, IDL.Nat], [], []),
   'deleteProduct' : IDL.Func([IDL.Text], [], []),
-  'getAllProducts' : IDL.Func([], [IDL.Vec(ProductV2)], ['query']),
+  'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getOrderForCaller' : IDL.Func([IDL.Nat], [IDL.Opt(Order)], ['query']),
   'getOrdersForCaller' : IDL.Func([], [IDL.Vec(Order)], ['query']),
   'getOrdersForUser' : IDL.Func([IDL.Principal], [IDL.Vec(Order)], ['query']),
-  'getProductDetails' : IDL.Func([ProductId], [IDL.Opt(ProductV2)], ['query']),
-  'getProducts' : IDL.Func([], [IDL.Vec(ProductV2)], ['query']),
-  'getProductsByCategory' : IDL.Func(
-      [IDL.Text],
-      [IDL.Vec(ProductV2)],
-      ['query'],
-    ),
+  'getProductDetails' : IDL.Func([ProductId], [IDL.Opt(Product)], ['query']),
+  'getProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
+  'getProductsByCategory' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
   'getStripeSessionStatus' : IDL.Func([IDL.Text], [StripeSessionStatus], []),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
@@ -152,7 +148,7 @@ export const idlService = IDL.Service({
       [TransformationOutput],
       ['query'],
     ),
-  'updateProduct' : IDL.Func([ProductV2], [], []),
+  'updateProduct' : IDL.Func([Product], [], []),
 });
 
 export const idlInitArgs = [];
@@ -169,7 +165,7 @@ export const idlFactory = ({ IDL }) => {
     'success' : IDL.Opt(IDL.Bool),
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
-  const ProductV2 = IDL.Record({
+  const Product = IDL.Record({
     'id' : IDL.Text,
     'name' : IDL.Text,
     'description' : IDL.Text,
@@ -256,7 +252,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-    'addProduct' : IDL.Func([ProductV2], [], []),
+    'addProduct' : IDL.Func([Product], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createCheckoutSession' : IDL.Func(
         [IDL.Vec(ShoppingItem), IDL.Text, IDL.Text],
@@ -265,21 +261,17 @@ export const idlFactory = ({ IDL }) => {
       ),
     'decreaseStock' : IDL.Func([IDL.Text, IDL.Nat], [], []),
     'deleteProduct' : IDL.Func([IDL.Text], [], []),
-    'getAllProducts' : IDL.Func([], [IDL.Vec(ProductV2)], ['query']),
+    'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getOrderForCaller' : IDL.Func([IDL.Nat], [IDL.Opt(Order)], ['query']),
     'getOrdersForCaller' : IDL.Func([], [IDL.Vec(Order)], ['query']),
     'getOrdersForUser' : IDL.Func([IDL.Principal], [IDL.Vec(Order)], ['query']),
-    'getProductDetails' : IDL.Func(
-        [ProductId],
-        [IDL.Opt(ProductV2)],
-        ['query'],
-      ),
-    'getProducts' : IDL.Func([], [IDL.Vec(ProductV2)], ['query']),
+    'getProductDetails' : IDL.Func([ProductId], [IDL.Opt(Product)], ['query']),
+    'getProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
     'getProductsByCategory' : IDL.Func(
         [IDL.Text],
-        [IDL.Vec(ProductV2)],
+        [IDL.Vec(Product)],
         ['query'],
       ),
     'getStripeSessionStatus' : IDL.Func([IDL.Text], [StripeSessionStatus], []),
@@ -303,7 +295,7 @@ export const idlFactory = ({ IDL }) => {
         [TransformationOutput],
         ['query'],
       ),
-    'updateProduct' : IDL.Func([ProductV2], [], []),
+    'updateProduct' : IDL.Func([Product], [], []),
   });
 };
 

@@ -89,16 +89,7 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface TransformationOutput {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export type Time = bigint;
-export interface _CaffeineStorageRefillInformation {
-    proposed_top_up_amount?: bigint;
-}
-export interface ProductV2 {
+export interface Product {
     id: string;
     name: string;
     description: string;
@@ -107,6 +98,15 @@ export interface ProductV2 {
     currency: string;
     category: string;
     price: bigint;
+}
+export interface TransformationOutput {
+    status: bigint;
+    body: Uint8Array;
+    headers: Array<http_header>;
+}
+export type Time = bigint;
+export interface _CaffeineStorageRefillInformation {
+    proposed_top_up_amount?: bigint;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
@@ -176,20 +176,20 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
-    addProduct(product: ProductV2): Promise<void>;
+    addProduct(product: Product): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     decreaseStock(productId: string, quantity: bigint): Promise<void>;
     deleteProduct(productId: string): Promise<void>;
-    getAllProducts(): Promise<Array<ProductV2>>;
+    getAllProducts(): Promise<Array<Product>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getOrderForCaller(orderId: bigint): Promise<Order | null>;
     getOrdersForCaller(): Promise<Array<Order>>;
     getOrdersForUser(user: Principal): Promise<Array<Order>>;
-    getProductDetails(productId: ProductId): Promise<ProductV2 | null>;
-    getProducts(): Promise<Array<ProductV2>>;
-    getProductsByCategory(category: string): Promise<Array<ProductV2>>;
+    getProductDetails(productId: ProductId): Promise<Product | null>;
+    getProducts(): Promise<Array<Product>>;
+    getProductsByCategory(category: string): Promise<Array<Product>>;
     getStripeSessionStatus(sessionId: string): Promise<StripeSessionStatus>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
@@ -197,11 +197,11 @@ export interface backendInterface {
     restockProduct(productId: string, quantity: bigint): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
-    submitOrder(products: Array<[ProductId, Quantity]>): Promise<bigint>;
+    submitOrder(orderProducts: Array<[ProductId, Quantity]>): Promise<bigint>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
-    updateProduct(product: ProductV2): Promise<void>;
+    updateProduct(product: Product): Promise<void>;
 }
-import type { Order as _Order, ProductV2 as _ProductV2, StripeSessionStatus as _StripeSessionStatus, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { Order as _Order, Product as _Product, StripeSessionStatus as _StripeSessionStatus, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -302,7 +302,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addProduct(arg0: ProductV2): Promise<void> {
+    async addProduct(arg0: Product): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.addProduct(arg0);
@@ -372,7 +372,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getAllProducts(): Promise<Array<ProductV2>> {
+    async getAllProducts(): Promise<Array<Product>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getAllProducts();
@@ -456,7 +456,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getProductDetails(arg0: ProductId): Promise<ProductV2 | null> {
+    async getProductDetails(arg0: ProductId): Promise<Product | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getProductDetails(arg0);
@@ -470,7 +470,7 @@ export class Backend implements backendInterface {
             return from_candid_opt_n14(this._uploadFile, this._downloadFile, result);
         }
     }
-    async getProducts(): Promise<Array<ProductV2>> {
+    async getProducts(): Promise<Array<Product>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getProducts();
@@ -484,7 +484,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getProductsByCategory(arg0: string): Promise<Array<ProductV2>> {
+    async getProductsByCategory(arg0: string): Promise<Array<Product>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getProductsByCategory(arg0);
@@ -624,7 +624,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateProduct(arg0: ProductV2): Promise<void> {
+    async updateProduct(arg0: Product): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.updateProduct(arg0);
@@ -654,7 +654,7 @@ function from_candid_opt_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 function from_candid_opt_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Order]): Order | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_ProductV2]): ProductV2 | null {
+function from_candid_opt_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Product]): Product | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {

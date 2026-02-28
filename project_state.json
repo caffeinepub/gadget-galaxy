@@ -1,16 +1,34 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "E-commerce or catalog project featuring tech/gadget products.",
+  "summary": "E-commerce project with a product page that needs to be made functional.",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Product page is not working/functional"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-populate-the-products-array-in-productcatalog-tsx-with-at-least-40-unique-tech-gadget-products-spanning-a-wide-variety-of-categories-e-g-smartphones-laptops-wearables-audio-smart-home-gaming-photography-networking-accessories-drones-vr-ar-health-tech-robotics-e-readers-each-product-must-have-a-unique-id-name-description-price-category-image-placeholder-or-emoji-and-a-rating",
-      "title": "Populate the PRODUCTS array in ProductCatalog.tsx with at least 40 unique tech/gadget products spanning a wide variety of categories (e.g., smartphones, laptops, wearables, audio, smart home, gaming, photography, networking, accessories, drones, VR/AR, health tech, robotics, e-readers). Each product must have a unique id, name, description, price, category, image placeholder or emoji, and a rating.",
+      "id": "feature-audit-the-productcatalog-component-and-ensure-all-products-load-correctly-from-the-backend-including-accurate-product-names-descriptions-prices-and-categories-fix-any-broken-data-fetching-or-rendering-issues-that-prevent-products-from-displaying",
+      "title": "Audit the ProductCatalog component and ensure all products load correctly from the backend, including accurate product names, descriptions, prices, and categories. Fix any broken data fetching or rendering issues that prevent products from displaying.",
       "reqIds": [
         "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-product-images-render-correctly-in-productcatalog-verify-that-the-name-based-and-category-based-image-resolution-logic-maps-each-product-to-a-valid-image-and-that-broken-missing-images-show-a-proper-fallback-placeholder",
+      "title": "Ensure product images render correctly in ProductCatalog. Verify that the name-based and category-based image resolution logic maps each product to a valid image, and that broken/missing images show a proper fallback placeholder.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-add-to-cart-action-on-each-product-card-in-productcatalog-functions-correctly-clicking-it-adds-the-product-to-the-cart-state-updates-the-cart-badge-count-in-the-header-and-the-item-is-visible-in-cartpanel",
+      "title": "Ensure the 'Add to Cart' action on each product card in ProductCatalog functions correctly — clicking it adds the product to the cart state, updates the cart badge count in the Header, and the item is visible in CartPanel.",
+      "reqIds": [
+        "REQ-3"
       ],
       "version": 1
     }
@@ -18,8 +36,16 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add as many unique tech/gadget products to the catalog as possible",
+      "summary": "Make the product page work/functional",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Verify that backend product data (names, descriptions, prices, categories) is accurate and complete. Fix any products that have missing, placeholder, or incorrect descriptions or pricing values stored in the backend.",
+      "reqIds": [
+        "REQ-4"
+      ],
       "status": "pending"
     }
   ],

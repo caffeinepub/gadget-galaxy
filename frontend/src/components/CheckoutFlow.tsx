@@ -33,6 +33,13 @@ export default function CheckoutFlow({ items, onOrderPlaced, onBack }: CheckoutF
     // If Stripe is configured, use Stripe Checkout redirect
     if (stripeConfigured) {
       try {
+        // Save cart items to sessionStorage before redirecting so PaymentSuccess can retrieve them
+        try {
+          sessionStorage.setItem('pendingCartItems', JSON.stringify(items));
+        } catch {
+          // ignore storage errors
+        }
+
         const shoppingItems: ShoppingItem[] = items.map((item) => ({
           productName: item.name,
           productDescription: item.name,
@@ -55,7 +62,7 @@ export default function CheckoutFlow({ items, onOrderPlaced, onBack }: CheckoutF
     // Fallback: direct order submission (no payment)
     try {
       const products: Array<[string, bigint]> = items.map((item) => [
-        String(item.id),
+        item.productId,
         BigInt(item.quantity),
       ]);
       const orderId = await submitOrder.mutateAsync(products);
@@ -141,6 +148,12 @@ export default function CheckoutFlow({ items, onOrderPlaced, onBack }: CheckoutF
                   src={item.image}
                   alt={item.name}
                   className="w-14 h-14 object-cover rounded-lg flex-shrink-0"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    if (!target.src.includes('product-speaker')) {
+                      target.src = '/assets/generated/product-speaker.dim_600x600.png';
+                    }
+                  }}
                 />
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-900 text-sm">{item.name}</p>

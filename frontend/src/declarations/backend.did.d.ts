@@ -16,8 +16,7 @@ export interface Order {
   'timestamp' : Time,
   'products' : Array<[ProductId, Quantity]>,
 }
-export type ProductId = string;
-export interface ProductV2 {
+export interface Product {
   'id' : string,
   'name' : string,
   'description' : string,
@@ -27,6 +26,7 @@ export interface ProductV2 {
   'category' : string,
   'price' : bigint,
 }
+export type ProductId = string;
 export type Quantity = bigint;
 export interface ShoppingItem {
   'productName' : string,
@@ -91,7 +91,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'addProduct' : ActorMethod<[ProductV2], undefined>,
+  'addProduct' : ActorMethod<[Product], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createCheckoutSession' : ActorMethod<
     [Array<ShoppingItem>, string, string],
@@ -99,15 +99,15 @@ export interface _SERVICE {
   >,
   'decreaseStock' : ActorMethod<[string, bigint], undefined>,
   'deleteProduct' : ActorMethod<[string], undefined>,
-  'getAllProducts' : ActorMethod<[], Array<ProductV2>>,
+  'getAllProducts' : ActorMethod<[], Array<Product>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getOrderForCaller' : ActorMethod<[bigint], [] | [Order]>,
   'getOrdersForCaller' : ActorMethod<[], Array<Order>>,
   'getOrdersForUser' : ActorMethod<[Principal], Array<Order>>,
-  'getProductDetails' : ActorMethod<[ProductId], [] | [ProductV2]>,
-  'getProducts' : ActorMethod<[], Array<ProductV2>>,
-  'getProductsByCategory' : ActorMethod<[string], Array<ProductV2>>,
+  'getProductDetails' : ActorMethod<[ProductId], [] | [Product]>,
+  'getProducts' : ActorMethod<[], Array<Product>>,
+  'getProductsByCategory' : ActorMethod<[string], Array<Product>>,
   'getStripeSessionStatus' : ActorMethod<[string], StripeSessionStatus>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
@@ -117,7 +117,7 @@ export interface _SERVICE {
   'setStripeConfiguration' : ActorMethod<[StripeConfiguration], undefined>,
   'submitOrder' : ActorMethod<[Array<[ProductId, Quantity]>], bigint>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
-  'updateProduct' : ActorMethod<[ProductV2], undefined>,
+  'updateProduct' : ActorMethod<[Product], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

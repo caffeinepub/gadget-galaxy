@@ -1,18 +1,30 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-28T16:59:20.643Z",
+  "generatedAt": "2026-02-28T19:50:35.519Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 4,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Populate the PRODUCTS array in ProductCatalog.tsx with at least 40 unique tech/gadget products spanning a wide variety of categories (e.g., smartphones, laptops, wearables, audio, smart home, gaming, photography, networking, accessories, drones, VR/AR, health tech, robotics, e-readers). Each product must have a unique id, name, description, price, category, image placeholder or emoji, and a rating.",
+        "summary": "Audit the ProductCatalog component and ensure all products load correctly from the backend, including accurate product names, descriptions, prices, and categories. Fix any broken data fetching or rendering issues that prevent products from displaying.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/ProductCatalog.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/ProductCatalog.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Ensure product images render correctly in ProductCatalog. Verify that the name-based and category-based image resolution logic maps each product to a valid image, and that broken/missing images show a proper fallback placeholder.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/ProductCatalog.tsx"
@@ -20,14 +32,42 @@
         "matchedFiles": [
           "frontend/src/components/ProductCatalog.tsx"
         ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Ensure the 'Add to Cart' action on each product card in ProductCatalog functions correctly — clicking it adds the product to the cart state, updates the cart badge count in the Header, and the item is visible in CartPanel.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/ProductCatalog.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/components/CartPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/ProductCatalog.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/CartPanel.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Verify that backend product data (names, descriptions, prices, categories) is accurate and complete. Fix any products that have missing, placeholder, or incorrect descriptions or pricing values stored in the backend.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/components/CartPanel.tsx",
+    "frontend/src/components/CheckoutFlow.tsx",
     "frontend/src/components/ProductCatalog.tsx",
     "project_state.json",
     "scratch/component-selection.json",

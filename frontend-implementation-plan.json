@@ -1,24 +1,74 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Populate product catalog with many unique tech/gadget products",
+  "title": "Fix Product Page Functionality",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Populate the PRODUCTS array in ProductCatalog.tsx with at least 40 unique tech/gadget products spanning a wide variety of categories",
+      "summary": "Audit and fix ProductCatalog component to correctly load and display all products from the backend with accurate data, functional search, category filtering, and sorting",
       "acceptanceCriteria": [
-        "At least 40 distinct products are present in the PRODUCTS array",
-        "Products span at least 8 different categories",
-        "Each product has a unique id, name, short description, numeric price, category string, and rating value",
-        "No duplicate product names exist in the catalog",
-        "All products are visible and filterable in the catalog grid on the frontend",
-        "Category filter chips correctly filter the expanded product list"
+        "All products retrieved from the backend are displayed in the product grid",
+        "Each product card shows the correct name, description, price, and category",
+        "Search and category filter controls function correctly and narrow results",
+        "Sort controls reorder the product list as expected"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/ProductCatalog.tsx",
           "operation": "modify",
-          "description": "Expand the PRODUCTS array to include at least 40 unique tech/gadget products spanning at least 8 categories (e.g., smartphones, laptops, wearables, audio, smart home, gaming, photography, networking, accessories, drones, VR/AR, health tech, robotics, e-readers). Each product must have a unique id (e.g., 'prod-001'), name, short description (1-2 sentences), numeric price, category string, rating value (0-5), and an image field (emoji or placeholder string). Ensure no duplicate product names exist. Maintain the existing data structure and do not modify the catalog UI layout, filtering, or sorting logic. Use realistic product names, prices, and descriptions appropriate for a tech/gadget e-commerce site."
+          "description": "Audit and fix the ProductCatalog component to ensure products load correctly from the backend. Verify that getAllProducts() query hook is properly invoked and that loading, error, and data states are handled correctly. Ensure all product properties (name, description, price, category) render in each product card. Test that search input filters products by name and description. Verify category dropdown filters products by category field. Confirm sort dropdown reorders products by price or name. Fix any broken data transformation, null handling, or conditional rendering that prevents products from displaying."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Review the useGetAllProducts hook and ensure it correctly calls actor.getAllProducts() and properly handles the Product[] response type. Verify query key, enabled state, and retry logic. Fix any query configuration issues that might prevent product data from loading or refreshing correctly."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Ensure product images render correctly in ProductCatalog with proper name-based and category-based image resolution logic and fallback placeholders for missing images",
+      "acceptanceCriteria": [
+        "Every product card displays an image (either matched or fallback)",
+        "No broken image icons appear on the product page",
+        "Fallback image is visually consistent with the product grid layout"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ProductCatalog.tsx",
+          "operation": "modify",
+          "description": "Audit and fix the image resolution logic in ProductCatalog. Verify that the function mapping product names and categories to local asset paths correctly references generated images in frontend/public/assets/generated/ with the exact filenames including .dim_WIDTHxHEIGHT suffixes (e.g., product-charger.dim_600x600.png, gaming-mouse-product.dim_400x400.png). Ensure the mapping covers all product names and categories. Implement a robust fallback mechanism that displays a consistent placeholder image when no match is found. Test that no broken image icons appear and that all product cards display a valid image (either matched or fallback). Ensure the fallback image is visually consistent with the product grid layout and dimensions."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Ensure 'Add to Cart' functionality works correctly in ProductCatalog, updating cart state, header badge count, and making items visible in CartPanel",
+      "acceptanceCriteria": [
+        "Clicking 'Add to Cart' on a product increments the cart item count in the header badge",
+        "The added product appears in the CartPanel with correct name, price, and quantity",
+        "Adding the same product multiple times increases the quantity rather than duplicating entries"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ProductCatalog.tsx",
+          "operation": "modify",
+          "description": "Audit and fix the 'Add to Cart' button functionality in ProductCatalog. Verify that clicking the button calls the addToCart function passed via props with the correct product data (id, name, price, imageUrl). Ensure the button is not disabled inappropriately and that onClick handlers are properly wired. Test that the cart state updates immediately after adding a product."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Audit and fix the cart state management in App.tsx. Verify that the addToCart function correctly updates the cart items array. Ensure that adding the same product multiple times increments the quantity of the existing cart item rather than creating duplicate entries. Confirm that the cart state is properly passed to Header (for badge count) and CartPanel (for item display). Test that the cart count displayed in the Header badge accurately reflects the total number of items in the cart."
+        },
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Audit and fix the cart badge display in Header. Verify that the badge correctly calculates and displays the total cart item count from the cart state prop. Ensure the badge updates immediately when items are added to the cart. Fix any conditional rendering issues that might hide the badge or show incorrect counts."
+        },
+        {
+          "path": "frontend/src/components/CartPanel.tsx",
+          "operation": "modify",
+          "description": "Audit and fix CartPanel to ensure added products appear correctly with accurate name, price, and quantity. Verify that the cart items prop is properly mapped to display each item. Ensure quantity controls (increment/decrement) and remove button function correctly and update the cart state. Confirm that image resolution logic matches the logic in ProductCatalog for consistency. Test that the panel correctly displays an empty state when no items are in the cart."
         }
       ]
     }

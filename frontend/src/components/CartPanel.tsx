@@ -5,9 +5,44 @@ interface CartPanelProps {
   open: boolean;
   onClose: () => void;
   items: CartItem[];
-  onRemove: (id: number) => void;
-  onUpdateQuantity: (id: number, quantity: number) => void;
+  onRemove: (id: string) => void;
+  onUpdateQuantity: (id: string, quantity: number) => void;
   onCheckout: () => void;
+}
+
+/**
+ * Returns a local fallback image path based on the cart item's name.
+ */
+function getCartItemImage(item: CartItem): string {
+  const nameLower = item.name.toLowerCase();
+
+  if (nameLower.includes('headphone') || nameLower.includes('over-ear') || nameLower.includes('over ear')) {
+    return '/assets/generated/product-headphones.dim_600x600.png';
+  }
+  if (nameLower.includes('earbud') || nameLower.includes('ear bud') || nameLower.includes('tws') || nameLower.includes('in-ear')) {
+    return '/assets/generated/product-earbuds.dim_600x600.png';
+  }
+  if (nameLower.includes('speaker') || nameLower.includes('bluetooth speaker')) {
+    return '/assets/generated/product-speaker.dim_600x600.png';
+  }
+  if (nameLower.includes('smartwatch') || nameLower.includes('smart watch') || nameLower.includes('watch')) {
+    return '/assets/generated/product-smartwatch.dim_600x600.png';
+  }
+  if (nameLower.includes('keyboard') || nameLower.includes('mechanical')) {
+    return '/assets/generated/product-keyboard.dim_600x600.png';
+  }
+  if (nameLower.includes('mouse') || nameLower.includes('gaming mouse')) {
+    return '/assets/generated/product-mouse.dim_600x600.png';
+  }
+  if (nameLower.includes('charger') || nameLower.includes('usb-c') || nameLower.includes('usbc') || nameLower.includes('cable')) {
+    return '/assets/generated/product-charger.dim_600x600.png';
+  }
+  if (nameLower.includes('webcam') || nameLower.includes('web cam') || nameLower.includes('camera')) {
+    return '/assets/generated/product-webcam.dim_600x600.png';
+  }
+
+  // Use the stored image if available, otherwise default
+  return item.image || '/assets/generated/product-speaker.dim_600x600.png';
 }
 
 export default function CartPanel({
@@ -80,52 +115,63 @@ export default function CartPanel({
             </div>
           ) : (
             <ul className="space-y-4">
-              {items.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex gap-3 bg-gray-50 rounded-xl p-3"
-                >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 text-sm truncate">
-                      {item.name}
-                    </p>
-                    <p className="text-teal font-bold text-sm mt-0.5">
-                      ${item.price.toFixed(2)}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <button
-                        onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                        className="w-6 h-6 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-sm flex items-center justify-center transition-colors"
-                        aria-label="Decrease quantity"
-                      >
-                        −
-                      </button>
-                      <span className="text-sm font-semibold text-gray-800 w-5 text-center">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                        className="w-6 h-6 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-sm flex items-center justify-center transition-colors"
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => onRemove(item.id)}
-                    className="text-gray-400 hover:text-red-500 transition-colors p-1 self-start"
-                    aria-label={`Remove ${item.name}`}
+              {items.map((item) => {
+                const imageSrc = getCartItemImage(item);
+                return (
+                  <li
+                    key={item.id}
+                    className="flex gap-3 bg-gray-50 rounded-xl p-3"
                   >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </li>
-              ))}
+                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-100">
+                      <img
+                        src={imageSrc}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (!target.src.includes('product-speaker')) {
+                            target.src = '/assets/generated/product-speaker.dim_600x600.png';
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm truncate">
+                        {item.name}
+                      </p>
+                      <p className="text-teal font-bold text-sm mt-0.5">
+                        ${item.price.toFixed(2)}
+                      </p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                          className="w-6 h-6 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-sm flex items-center justify-center transition-colors"
+                          aria-label="Decrease quantity"
+                        >
+                          −
+                        </button>
+                        <span className="text-sm font-semibold text-gray-800 w-5 text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                          className="w-6 h-6 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-sm flex items-center justify-center transition-colors"
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => onRemove(item.id)}
+                      className="text-gray-400 hover:text-red-500 transition-colors p-1 self-start"
+                      aria-label={`Remove ${item.name}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

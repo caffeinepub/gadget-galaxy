@@ -1,13 +1,14 @@
-import { ShoppingCart, Zap, LogIn, LogOut, User, Package, Home } from 'lucide-react';
+import { ShoppingCart, Zap, LogIn, LogOut, User, Package, Home, ShieldCheck } from 'lucide-react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useQueryClient } from '@tanstack/react-query';
-import { useGetCallerUserProfile } from '../hooks/useQueries';
+import { useGetCallerUserProfile, useIsCallerAdmin } from '../hooks/useQueries';
 
 interface HeaderProps {
   cartCount: number;
   onCartClick: () => void;
   onViewOrders: () => void;
   onHome: () => void;
+  onAdminPanel: () => void;
   currentView: string;
 }
 
@@ -16,11 +17,13 @@ export default function Header({
   onCartClick,
   onViewOrders,
   onHome,
+  onAdminPanel,
   currentView,
 }: HeaderProps) {
   const { login, clear, loginStatus, identity, isLoggingIn } = useInternetIdentity();
   const queryClient = useQueryClient();
   const { data: userProfile } = useGetCallerUserProfile();
+  const { data: isAdmin } = useIsCallerAdmin();
 
   const isAuthenticated = !!identity;
 
@@ -85,6 +88,17 @@ export default function Header({
               >
                 <Package className="w-3.5 h-3.5" />
                 My Orders
+              </button>
+            )}
+            {isAuthenticated && isAdmin && (
+              <button
+                onClick={onAdminPanel}
+                className={`flex items-center gap-1.5 font-medium transition-colors text-sm ${
+                  currentView === 'admin' ? 'text-white' : 'text-white/70 hover:text-white'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                Admin Panel
               </button>
             )}
           </nav>

@@ -1,18 +1,19 @@
 import Map "mo:core/Map";
 import List "mo:core/List";
+import Iter "mo:core/Iter";
 import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
+import Text "mo:core/Text";
 import Time "mo:core/Time";
 import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
 import Stripe "stripe/stripe";
 import MixinStorage "blob-storage/Mixin";
 import OutCall "http-outcalls/outcall";
-import Iter "mo:core/Iter";
+import Migration "migration";
 
-
-
+(with migration = Migration.run)
 actor {
   include MixinStorage();
   let accessControlState = AccessControl.initState();
@@ -32,7 +33,7 @@ actor {
     name : Text;
   };
 
-  public type ProductV2 = {
+  public type Product = {
     id : Text;
     name : Text;
     description : Text;
@@ -47,30 +48,31 @@ actor {
   var nextOrderId = 0;
 
   let userProfiles = Map.empty<Principal, UserProfile>();
-  let products = Map.empty<Text, ProductV2>();
+  let products = Map.empty<Text, Product>();
 
   var stripeConfig : ?Stripe.StripeConfiguration = null;
 
-  public query ({ caller }) func getProducts() : async [ProductV2] {
+  // Product Management
+  public query func getProducts() : async [Product] {
     products.values().toArray();
   };
 
-  public query ({ caller }) func getProductsByCategory(category : Text) : async [ProductV2] {
+  public query func getProductsByCategory(category : Text) : async [Product] {
     products.values().toArray().filter(func(p) { p.category == category });
   };
 
-  public query ({ caller }) func getProductDetails(productId : ProductId) : async ?ProductV2 {
+  public query func getProductDetails(productId : ProductId) : async ?Product {
     products.get(productId);
   };
 
-  public shared ({ caller }) func addProduct(product : ProductV2) : async () {
+  public shared ({ caller }) func addProduct(product : Product) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can add products");
     };
     products.add(product.id, product);
   };
 
-  public shared ({ caller }) func updateProduct(product : ProductV2) : async () {
+  public shared ({ caller }) func updateProduct(product : Product) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update products");
     };
@@ -84,6 +86,7 @@ actor {
     products.remove(productId);
   };
 
+  // User Profile Management
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can get profiles");
@@ -105,17 +108,18 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  public shared ({ caller }) func submitOrder(products : [(ProductId, Quantity)]) : async Nat {
+  // Order Management
+  public shared ({ caller }) func submitOrder(orderProducts : [(ProductId, Quantity)]) : async Nat {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only authenticated users can submit orders");
     };
-    if (products.size() == 0) {
+    if (orderProducts.size() == 0) {
       Runtime.trap("Order must contain at least one product");
     };
 
     let order : Order = {
       id = nextOrderId;
-      products;
+      products = orderProducts;
       timestamp = Time.now();
       principal = caller;
     };
@@ -178,6 +182,7 @@ actor {
     };
   };
 
+  // Stripe Integration
   public query func isStripeConfigured() : async Bool {
     stripeConfig != null;
   };
@@ -214,13 +219,13 @@ actor {
     OutCall.transform(input);
   };
 
-  public query ({ caller }) func getAllProducts() : async [ProductV2] {
+  public query func getAllProducts() : async [Product] {
     products.values().toArray();
   };
 
   public shared ({ caller }) func decreaseStock(productId : Text, quantity : Nat) : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only authenticated users can decrease stock");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can decrease stock");
     };
     switch (products.get(productId)) {
       case (null) { Runtime.trap("Product not found") };
@@ -253,3 +258,4 @@ actor {
     };
   };
 };
+

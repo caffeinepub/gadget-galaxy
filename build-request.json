@@ -1,42 +1,91 @@
 {
   "kind": "build_request",
-  "title": "Populate product catalog with many unique tech/gadget products",
+  "title": "Fix product page functionality",
   "projectName": "Gadget Galaxy",
-  "priority": "normal",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Populate the PRODUCTS array in ProductCatalog.tsx with at least 40 unique tech/gadget products spanning a wide variety of categories (e.g., smartphones, laptops, wearables, audio, smart home, gaming, photography, networking, accessories, drones, VR/AR, health tech, robotics, e-readers). Each product must have a unique id, name, description, price, category, image placeholder or emoji, and a rating.",
+      "text": "Audit the ProductCatalog component and ensure all products load correctly from the backend, including accurate product names, descriptions, prices, and categories. Fix any broken data fetching or rendering issues that prevent products from displaying.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-1"
         ],
         "quotes": [
-          "add as many unique teach/gadget products"
+          "make the product page work"
         ]
       },
       "acceptanceCriteria": [
-        "At least 40 distinct products are present in the PRODUCTS array",
-        "Products span at least 8 different categories",
-        "Each product has a unique id, name, short description, numeric price, category string, and rating value",
-        "No duplicate product names exist in the catalog",
-        "All products are visible and filterable in the catalog grid on the frontend",
-        "Category filter chips correctly filter the expanded product list"
+        "All products retrieved from the backend are displayed in the product grid",
+        "Each product card shows the correct name, description, price, and category",
+        "Search and category filter controls function correctly and narrow results",
+        "Sort controls reorder the product list as expected"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Ensure product images render correctly in ProductCatalog. Verify that the name-based and category-based image resolution logic maps each product to a valid image, and that broken/missing images show a proper fallback placeholder.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "make the product page work"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Every product card displays an image (either matched or fallback)",
+        "No broken image icons appear on the product page",
+        "Fallback image is visually consistent with the product grid layout"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Ensure the 'Add to Cart' action on each product card in ProductCatalog functions correctly — clicking it adds the product to the cart state, updates the cart badge count in the Header, and the item is visible in CartPanel.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "make the product page work"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking 'Add to Cart' on a product increments the cart item count in the header badge",
+        "The added product appears in the CartPanel with correct name, price, and quantity",
+        "Adding the same product multiple times increases the quantity rather than duplicating entries"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Verify that backend product data (names, descriptions, prices, categories) is accurate and complete. Fix any products that have missing, placeholder, or incorrect descriptions or pricing values stored in the backend.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "make the product page work"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All products have non-empty, meaningful descriptions",
+        "All products have valid prices greater than zero",
+        "All products are assigned a valid, non-empty category"
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/src/hooks/ (immutable paths)",
-    "Do not modify frontend/src/main.tsx",
-    "Do not modify frontend/src/components/ui/",
-    "All product data must remain in the frontend PRODUCTS array — do not route it through the backend"
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
+    "Keep all Motoko logic in backend/main.mo"
   ],
   "nonGoals": [
-    "Adding new backend endpoints or modifying the Motoko actor for product data",
-    "Implementing a CMS or admin UI for adding products",
-    "Changing the existing catalog UI layout or filtering/sorting logic",
-    "Adding real product images (placeholder values or emojis are acceptable)"
+    "Redesigning the product page layout or visual theme",
+    "Adding new product features not currently in scope (reviews, wishlist, etc.)",
+    "Changes to the checkout or payment flow"
   ],
   "imageRequirements": {
     "required": [],
