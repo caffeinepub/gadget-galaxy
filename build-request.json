@@ -1,0 +1,45 @@
+{
+  "kind": "build_request",
+  "title": "Populate product catalog with many unique tech/gadget products",
+  "projectName": "Gadget Galaxy",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Populate the PRODUCTS array in ProductCatalog.tsx with at least 40 unique tech/gadget products spanning a wide variety of categories (e.g., smartphones, laptops, wearables, audio, smart home, gaming, photography, networking, accessories, drones, VR/AR, health tech, robotics, e-readers). Each product must have a unique id, name, description, price, category, image placeholder or emoji, and a rating.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "add as many unique teach/gadget products"
+        ]
+      },
+      "acceptanceCriteria": [
+        "At least 40 distinct products are present in the PRODUCTS array",
+        "Products span at least 8 different categories",
+        "Each product has a unique id, name, short description, numeric price, category string, and rating value",
+        "No duplicate product names exist in the catalog",
+        "All products are visible and filterable in the catalog grid on the frontend",
+        "Category filter chips correctly filter the expanded product list"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify any files under frontend/src/hooks/ (immutable paths)",
+    "Do not modify frontend/src/main.tsx",
+    "Do not modify frontend/src/components/ui/",
+    "All product data must remain in the frontend PRODUCTS array — do not route it through the backend"
+  ],
+  "nonGoals": [
+    "Adding new backend endpoints or modifying the Motoko actor for product data",
+    "Implementing a CMS or admin UI for adding products",
+    "Changing the existing catalog UI layout or filtering/sorting logic",
+    "Adding real product images (placeholder values or emojis are acceptable)"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

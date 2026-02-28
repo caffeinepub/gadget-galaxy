@@ -1,0 +1,27 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-populate-the-products-array-in-productcatalog-tsx-with-at-least-40-unique-tech-gadget-products-spanning-a-wide-variety-of-categories-e-g-smartphones-laptops-wearables-audio-smart-home-gaming-photography-networking-accessories-drones-vr-ar-health-tech-robotics-e-readers-each-product-must-have-a-unique-id-name-description-price-category-image-placeholder-or-emoji-and-a-rating",
+      "featureTitle": "Populate the PRODUCTS array in ProductCatalog.tsx with at least 40 unique tech/gadget products spanning a wide variety of categories (e.g., smartphones, laptops, wearables, audio, smart home, gaming, photography, networking, accessories, drones, VR/AR, health tech, robotics, e-readers). Each product must have a unique id, name, description, price, category, image placeholder or emoji, and a rating.",
+      "files": [
+        "frontend/src/components/ProductCatalog.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0",
+        "authorization@4.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
